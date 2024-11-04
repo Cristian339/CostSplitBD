@@ -36,4 +36,6 @@ public class Usuario {
 
     @Column(name = "es_admin", nullable = false)
     private boolean esAdmin;
+
 }
+

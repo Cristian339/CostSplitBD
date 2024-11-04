@@ -1,8 +1,10 @@
 package org.example.costsplitbd.services;
 
 import org.example.costsplitbd.dto.*;
+import org.example.costsplitbd.models.Gasto;
 import org.example.costsplitbd.models.Grupo;
 import org.example.costsplitbd.models.Usuario;
+import org.example.costsplitbd.repositories.GastoRepository;
 import org.example.costsplitbd.repositories.GrupoRepository;
 import org.example.costsplitbd.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class GrupoService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private GastoRepository gastoRepository;
 
 
     public GrupoDTO crearGrupo(CrearGrupoDTO crearGrupoDTO) {
@@ -55,25 +60,32 @@ public class GrupoService {
 
 
     public GrupoDetalladoDTO aniadirParticipantes(Long idGrupo, AniadirParticipanteDTO aniadirParticipanteDTO) {
-        Grupo grupo = null;
+        Grupo grupo = grupoRepository.findById(idGrupo).orElse(null);
+        if (grupo == null) {
+            // Handle the case where the group is not found
+            return null;
+        }
 
-        grupo = grupoRepository.findById(idGrupo).orElse(null);
-        Set<Usuario> usuarios = new HashSet<>();
+        Set<Usuario> usuarios = grupo.getUsuarios();
         for (Long idUsuario : aniadirParticipanteDTO.getIdUsuarios()) {
             Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
-            usuarios.add(usuario);
+            if (usuario != null) {
+                usuarios.add(usuario);
+            }
         }
         grupo.setUsuarios(usuarios);
         Grupo grupoAlmacenado = grupoRepository.save(grupo);
 
-
         GrupoDetalladoDTO grupoDetalladoDTO = new GrupoDetalladoDTO();
         grupoDetalladoDTO.setId(grupoAlmacenado.getId());
         grupoDetalladoDTO.setNombre(grupoAlmacenado.getNombre());
         grupoDetalladoDTO.setImagenUrl(grupoAlmacenado.getImagenUrl());
         grupoDetalladoDTO.setDescripcion(grupoAlmacenado.getDescripcion());
         grupoDetalladoDTO.setFechaCreacion(grupoAlmacenado.getFechaCreacion());
-        grupoDetalladoDTO.setUsuarios(new ArrayList<>());
+
+        if (grupoDetalladoDTO.getUsuarios() == null) {
+            grupoDetalladoDTO.setUsuarios(new ArrayList<>());
+        }
 
         grupoAlmacenado.getUsuarios().forEach(usuario -> {
             grupoDetalladoDTO.getUsuarios().add(new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(), usuario.getEmail()));
@@ -81,41 +93,82 @@ public class GrupoService {
         return grupoDetalladoDTO;
     }
 
-    public GrupoDetalladoDTO eliminarParticipantes(Long idGrupo, AniadirParticipanteDTO aniadirParticipanteDTO) {
-        Grupo grupo = null;
+    public List<UsuarioDTO> verParticipantesGrupo(Long idGrupo) {
+        Grupo grupo = grupoRepository.findById(idGrupo).orElse(null);
+        List<UsuarioDTO> usuarioDTOS = new ArrayList<>();
+        grupo.getUsuarios().forEach(usuario -> {
+            usuarioDTOS.add(new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(), usuario.getEmail()));
+        });
+        return usuarioDTOS;
+    }
 
-        grupo = grupoRepository.findById(idGrupo).orElse(null);
-        Set<Usuario> usuariosActuales = grupo.getUsuarios();
 
-//        Set<Usuario> usuarios = new HashSet<>();
-//        for (Long idUsuario : aniadirParticipanteDTO.getIdUsuarios()) {
-//            usuariosActuales.remove();
-//
-//            Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
-//            usuarios.add(usuario);
-//        }
-//
-//        Set<Usuario> usuariosActuales = grupo.getUsuarios();
-
-         /*ya vengo loco te hablo por mensaje ire a comer, en un rato dejo la idea de delete tendre otra reu en un rato.*/
-
-/*
-        grupo.setUsuarios(usuariosRestantes);*/
-
+    public void eliminarParticipante(Long idGrupo, AniadirParticipanteDTO aniadirParticipanteDTO) {
+        Grupo grupo = grupoRepository.findById(idGrupo).orElse(null);
+        if (grupo == null) {
+            return;
+        }
+        Set<Usuario> usuarios = grupo.getUsuarios();
+        for (Long idUsuario : aniadirParticipanteDTO.getIdUsuarios()) {
+            Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
+            if (usuario != null) {
+                usuarios.remove(usuario);
+            }
+        }
+        grupo.setUsuarios(usuarios);
         Grupo grupoAlmacenado = grupoRepository.save(grupo);
-
-
         GrupoDetalladoDTO grupoDetalladoDTO = new GrupoDetalladoDTO();
         grupoDetalladoDTO.setId(grupoAlmacenado.getId());
         grupoDetalladoDTO.setNombre(grupoAlmacenado.getNombre());
         grupoDetalladoDTO.setImagenUrl(grupoAlmacenado.getImagenUrl());
         grupoDetalladoDTO.setDescripcion(grupoAlmacenado.getDescripcion());
         grupoDetalladoDTO.setFechaCreacion(grupoAlmacenado.getFechaCreacion());
-        grupoDetalladoDTO.setUsuarios(new ArrayList<>());
 
+        if (grupoDetalladoDTO.getUsuarios() == null) {
+            grupoDetalladoDTO.setUsuarios(new ArrayList<>());
+        }
         grupoAlmacenado.getUsuarios().forEach(usuario -> {
             grupoDetalladoDTO.getUsuarios().add(new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(), usuario.getEmail()));
         });
-        return grupoDetalladoDTO;
     }
+
+
+    public List<GrupoDTO> listarGrupos(Long idUsuario) {
+        List<Grupo> grupos = grupoRepository.findByUsuarios_Id(idUsuario);
+        List<GrupoDTO> grupoDTOS = new ArrayList<>();
+        for (Grupo grupo : grupos) {
+            GrupoDTO grupoDTO = new GrupoDTO();
+            grupoDTO.setId(grupo.getId());
+            grupoDTO.setNombre(grupo.getNombre());
+            grupoDTO.setImagenUrl(grupo.getImagenUrl());
+            grupoDTO.setDescripcion(grupo.getDescripcion());
+            grupoDTO.setFechaCreacion(grupo.getFechaCreacion());
+            grupoDTOS.add(grupoDTO);
+        }
+        return grupoDTOS;
+    }
+
+    public GastoDTO aniadirGasto(Long idGrupo, GastoDTO gastoDTO) {
+        Grupo grupo = grupoRepository.findById(idGrupo).orElse(null);
+        if (grupo == null) {
+            return null;
+        }
+
+        Gasto gasto = new Gasto();
+        gasto.setDescripcion(gastoDTO.getDescripcion());
+        gasto.setMontoTotal(gastoDTO.getMontoTotal());
+        gasto.setFecha(LocalDateTime.now());
+        gasto.setTipo(Gasto.TipoGasto.DEUDA);
+        gasto.setPagador(usuarioRepository.findById(gastoDTO.getIdPagador()).orElse(null));
+        gasto.setGrupo(grupo);
+        gastoRepository.save(gasto);
+        return gastoDTO;
+
+    }
+
+
+
+
+
+
 }
