@@ -16,7 +16,6 @@ public class GastoDTO {
     private String descripcion;
     private BigDecimal montoTotal;
     private LocalDateTime fecha;
-    private String tipo;
     private Long idPagador;
 
 

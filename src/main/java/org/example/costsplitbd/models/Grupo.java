@@ -35,8 +35,8 @@ public class Grupo {
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "usuario_grupo",
             joinColumns = {@JoinColumn(name = "id_grupo")},
-            inverseJoinColumns = {@JoinColumn(name = "id_usuario")} //el inverso de la relacion es el usuario
-    )//es la relacion que tenemos usuario_grupo
+            inverseJoinColumns = {@JoinColumn(name = "id_usuario")}
+    )
     private Set<Usuario> usuarios;
 
 

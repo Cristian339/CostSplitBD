@@ -62,7 +62,6 @@ public class GrupoService {
     public GrupoDetalladoDTO aniadirParticipantes(Long idGrupo, AniadirParticipanteDTO aniadirParticipanteDTO) {
         Grupo grupo = grupoRepository.findById(idGrupo).orElse(null);
         if (grupo == null) {
-            // Handle the case where the group is not found
             return null;
         }
 
@@ -148,22 +147,21 @@ public class GrupoService {
         return grupoDTOS;
     }
 
-    public GastoDTO aniadirGasto(Long idGrupo, GastoDTO gastoDTO) {
-        Grupo grupo = grupoRepository.findById(idGrupo).orElse(null);
+    public GastoDTO aniadirGasto(GastoDTO gastoDTO) {
+        Grupo grupo = grupoRepository.findById(gastoDTO.getIdGrupo()).orElse(null);
         if (grupo == null) {
             return null;
         }
+
 
         Gasto gasto = new Gasto();
         gasto.setDescripcion(gastoDTO.getDescripcion());
         gasto.setMontoTotal(gastoDTO.getMontoTotal());
         gasto.setFecha(LocalDateTime.now());
-        gasto.setTipo(Gasto.TipoGasto.DEUDA);
         gasto.setPagador(usuarioRepository.findById(gastoDTO.getIdPagador()).orElse(null));
         gasto.setGrupo(grupo);
         gastoRepository.save(gasto);
         return gastoDTO;
-
     }
 
 

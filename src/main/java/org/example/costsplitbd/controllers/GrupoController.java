@@ -22,7 +22,7 @@ public class GrupoController {
     @PostMapping("/{idGrupo}/participantes/nuevo")
     public GrupoDetalladoDTO aniadirParticipantes(@PathVariable Long idGrupo,
                                                   @RequestBody AniadirParticipanteDTO aniadirParticipanteDTO) {
-        return grupoService.aniadirParticipantes (idGrupo, aniadirParticipanteDTO);
+        return grupoService.aniadirParticipantes(idGrupo, aniadirParticipanteDTO);
 
     }
 
@@ -38,15 +38,13 @@ public class GrupoController {
     }
 
     @GetMapping("/")
-    public List<GrupoDTO> listarGrupos(@RequestParam Long idUsuario   ) {
+    public List<GrupoDTO> listarGrupos(@RequestParam Long idUsuario) {
         return grupoService.listarGrupos(idUsuario);
     }
 
-    @PostMapping("/{idGrupo}/gasto/nuevo")
-    public GastoDTO aniadirGasto(@PathVariable Long idGrupo,
-                                 @RequestBody GastoDTO gastoDTO) {
-        gastoDTO.setIdGrupo(idGrupo);
-        return grupoService.aniadirGasto(idGrupo, gastoDTO);
+    @PostMapping("/gasto/nuevo")
+    public GastoDTO aniadirGasto(@RequestBody GastoDTO gastoDTO) {
+        return grupoService.aniadirGasto(gastoDTO);
     }
 
 }
