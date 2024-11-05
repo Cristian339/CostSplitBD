@@ -1,3 +1,4 @@
+/*
 package org.example.costsplitbd.services;
 
 import org.example.costsplitbd.models.Gasto;
@@ -25,3 +26,4 @@ public class GastoService {
         gastoRepository.deleteById(id);
     }
 }
+*/

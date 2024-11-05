@@ -11,23 +11,29 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Servicio para gestionar las operaciones relacionadas con los usuarios.
+ */
 @Service
 public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    /**
+     * Obtiene la lista de todos los usuarios.
+     *
+     * @return la lista de todos los usuarios
+     */
     public List<Usuario> getAllUsuarios() {
         return usuarioRepository.findAll();
     }
 
-    public Usuario getUsuarioById(Long id) {
-        return usuarioRepository.findById(id).orElse(null);
-    }
-
-    public void deleteUsuarioById(Long id) {
-        usuarioRepository.deleteById(id);
-    }
-
+    /**
+     * Lista los amigos de un usuario.
+     *
+     * @param idUsuario el ID del usuario
+     * @return la lista de amigos del usuario
+     */
     public List<UsuarioDTO> listarAmigos(Long idUsuario) {
         Set<Usuario> amigos = usuarioRepository.findAmigosByUsuarioId(idUsuario);
         List<UsuarioDTO> amigosDTO = new ArrayList<>();
@@ -37,6 +43,13 @@ public class UsuarioService {
         return amigosDTO;
     }
 
+    /**
+     * Crea una relación de amistad entre dos usuarios.
+     *
+     * @param idUsuario el ID del usuario
+     * @param idAmigo el ID del amigo
+     * @return los datos del amigo creado
+     */
     public UsuarioDTO crearAmigo(Long idUsuario, Long idAmigo) {
         Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
         if (usuario == null) {

@@ -1,3 +1,4 @@
+/*
 package org.example.costsplitbd.services;
 
 
@@ -26,3 +27,4 @@ public class BalanceService {
         balanceRepository.deleteById(id);
     }
 }
+*/
