@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /**
  * Representa un balance en la aplicación de división de costos.

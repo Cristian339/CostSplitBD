@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -42,12 +43,14 @@ public class GrupoService {
      * @param crearGrupoDTO los datos para crear el grupo
      * @return los datos del grupo creado
      */
-    public GrupoDTO crearGrupo(CrearGrupoDTO crearGrupoDTO) {
+    public GrupoDTO crearGrupo(CrearGrupoDTO crearGrupoDTO, Usuario usuarioCreador) {
         Grupo grupo = new Grupo();
         grupo.setNombre(crearGrupoDTO.getNombre());
         grupo.setImagenUrl(crearGrupoDTO.getImagenUrl());
         grupo.setDescripcion(crearGrupoDTO.getDescripcion());
         grupo.setFechaCreacion(LocalDateTime.now());
+        grupo.setUsuarios(new HashSet<>());
+        grupo.getUsuarios().add(usuarioCreador);
         Grupo grupoAlmacenado = grupoRepository.save(grupo);
 
         GrupoDTO grupoDTO = new GrupoDTO();
@@ -100,7 +103,7 @@ public class GrupoService {
         }
 
         grupoAlmacenado.getUsuarios().forEach(usuario -> {
-            grupoDetalladoDTO.getUsuarios().add(new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(), usuario.getEmail()));
+            grupoDetalladoDTO.getUsuarios().add(new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(), usuario.getEmail(),usuario.getUrlImg()));
         });
         return grupoDetalladoDTO;
     }
@@ -126,7 +129,7 @@ public class GrupoService {
         Grupo grupo = grupoRepository.findById(idGrupo).orElse(null);
         List<UsuarioDTO> usuarioDTOS = new ArrayList<>();
         grupo.getUsuarios().forEach(usuario -> {
-            usuarioDTOS.add(new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(), usuario.getEmail()));
+            usuarioDTOS.add(new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(), usuario.getEmail(),usuario.getUrlImg()));
         });
         return usuarioDTOS;
     }

@@ -1,6 +1,8 @@
 package org.example.costsplitbd.controllers;
 
 import org.example.costsplitbd.dto.*;
+import org.example.costsplitbd.models.Usuario;
+import org.example.costsplitbd.repositories.UsuarioRepository;
 import org.example.costsplitbd.services.GrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,8 @@ import java.util.List;
 public class GrupoController {
     @Autowired
     private GrupoService grupoService;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     /**
      * Crea un nuevo grupo.
@@ -23,8 +27,12 @@ public class GrupoController {
      * @return el grupo creado
      */
     @PostMapping("/crear")
-    public GrupoDTO crearGrupo(@RequestBody CrearGrupoDTO crearGrupoDTO) {
-        return grupoService.crearGrupo(crearGrupoDTO);
+    public GrupoDTO crearGrupo(@RequestBody CrearGrupoDTO crearGrupoDTO, @RequestParam Long idUsuarioCreador) {
+        Usuario usuarioCreador = usuarioRepository.findById(idUsuarioCreador).orElse(null);
+        if (usuarioCreador == null) {
+            throw new RuntimeException("Usuario creador no encontrado");
+        }
+        return grupoService.crearGrupo(crearGrupoDTO, usuarioCreador);
     }
 
     /**

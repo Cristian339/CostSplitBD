@@ -38,7 +38,7 @@ public class UsuarioService {
         Set<Usuario> amigos = usuarioRepository.findAmigosByUsuarioId(idUsuario);
         List<UsuarioDTO> amigosDTO = new ArrayList<>();
         for (Usuario amigo : amigos) {
-            amigosDTO.add(new UsuarioDTO(amigo.getId(), amigo.getNombre(), amigo.getApellidos(), amigo.getEmail()));
+            amigosDTO.add(new UsuarioDTO(amigo.getId(), amigo.getNombre(), amigo.getApellidos(), amigo.getEmail(),amigo.getUrlImg()));
         }
         return amigosDTO;
     }
@@ -67,6 +67,6 @@ public class UsuarioService {
         usuario.getAmigos().add(amigo);
         usuarioRepository.save(usuario);
 
-        return new UsuarioDTO(amigo.getId(), amigo.getNombre(), amigo.getApellidos(), amigo.getEmail());
+        return new UsuarioDTO(amigo.getId(), amigo.getNombre(), amigo.getApellidos(), amigo.getEmail(),amigo.getUrlImg());
     }
 }

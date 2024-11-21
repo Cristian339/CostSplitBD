@@ -62,6 +62,13 @@ public class Usuario {
      */
     @Column(name = "es_admin", nullable = false)
     private boolean esAdmin;
+    /**
+     * La URL de la imagen del grupo.
+     */
+    @Column(name = "url_img", nullable = false)
+    private String urlImg;
+
+    /**
 
     /**
      * Los amigos del usuario.

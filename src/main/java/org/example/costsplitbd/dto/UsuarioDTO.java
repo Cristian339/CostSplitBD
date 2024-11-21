@@ -31,4 +31,6 @@ public class UsuarioDTO {
      * El correo electrónico del usuario.
      */
     private String email;
+
+    private String urlImg;
 }
