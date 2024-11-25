@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Representa un gasto en la aplicación de división de costos.
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString(exclude = "grupo")
+@ToString(exclude = {"grupo", "usuarios"})
 @Entity
 @Table(name = "gasto", schema = "costsplit", catalog = "postgres")
 public class Gasto {
@@ -64,6 +66,17 @@ public class Gasto {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name="id_pagador", nullable = false)
     private Usuario pagador;
+
+    /**
+     * Los usuarios asociados con el gasto.
+     */
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "usuario_gasto",
+            joinColumns = @JoinColumn(name = "id_gasto"),
+            inverseJoinColumns = @JoinColumn(name = "id_usuario")
+    )
+    private Set<Usuario> usuarios = new HashSet<>();
 
     /**
      * Enum para los tipos de gasto.

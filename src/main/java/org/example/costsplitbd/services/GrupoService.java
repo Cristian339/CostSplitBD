@@ -51,6 +51,14 @@ public class GrupoService {
         grupo.setFechaCreacion(LocalDateTime.now());
         grupo.setUsuarios(new HashSet<>());
         grupo.getUsuarios().add(usuarioCreador);
+
+
+        if (crearGrupoDTO.getParticipantes() != null) {
+            for (Usuario participante : crearGrupoDTO.getParticipantes()) {
+                grupo.getUsuarios().add(participante);
+            }
+        }
+
         Grupo grupoAlmacenado = grupoRepository.save(grupo);
 
         GrupoDTO grupoDTO = new GrupoDTO();
