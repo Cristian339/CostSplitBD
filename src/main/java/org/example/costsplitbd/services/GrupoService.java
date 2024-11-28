@@ -76,20 +76,21 @@ public class GrupoService {
      *
      * @param idGrupo el ID del grupo
      * @param aniadirParticipanteDTO los datos de los participantes a añadir o eliminar
-     * @param isAdding indica si se están añadiendo (true) o eliminando (false) participantes
+     * @param esAgregar indica si se están añadiendo (true) o eliminando (false) participantes
      * @return los datos detallados del grupo actualizado
      */
-    private GrupoDetalladoDTO actualizarParticipantes(Long idGrupo, AniadirParticipanteDTO aniadirParticipanteDTO, boolean isAdding) {
+    private GrupoDetalladoDTO actualizarParticipantes(Long idGrupo, AniadirParticipanteDTO aniadirParticipanteDTO, boolean esAgregar) {
         Grupo grupo = grupoRepository.findById(idGrupo).orElse(null);
         if (grupo == null) {
             return null;
         }
 
-        Set<Usuario> usuarios = grupo.getUsuarios();
+        Set<Usuario
+                > usuarios = grupo.getUsuarios();
         for (Long idUsuario : aniadirParticipanteDTO.getIdUsuarios()) {
             Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
             if (usuario != null) {
-                if (isAdding) {
+                if (esAgregar) {
                     usuarios.add(usuario);
                 } else {
                     usuarios.remove(usuario);
@@ -111,7 +112,7 @@ public class GrupoService {
         }
 
         grupoAlmacenado.getUsuarios().forEach(usuario -> {
-            grupoDetalladoDTO.getUsuarios().add(new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(), usuario.getEmail(),usuario.getUrlImg()));
+            grupoDetalladoDTO.getUsuarios().add(new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(), usuario.getEmail(), usuario.getUrlImg()));
         });
         return grupoDetalladoDTO;
     }

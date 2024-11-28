@@ -1,8 +1,11 @@
 package org.example.costsplitbd.dto;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.antlr.v4.runtime.misc.NotNull;
+import org.apache.logging.log4j.message.Message;
 
 import java.math.BigDecimal;
 
@@ -22,6 +25,7 @@ public class BalanceDTO {
     /**
      * El nombre del usuario.
      */
+
     private String usuarioNombre;
 
     /**
