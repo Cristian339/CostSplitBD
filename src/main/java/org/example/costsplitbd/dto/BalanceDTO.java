@@ -1,5 +1,7 @@
 package org.example.costsplitbd.dto;
 
+import jakarta.validation.constraints.Negative;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,11 +27,12 @@ public class BalanceDTO {
     /**
      * El nombre del usuario.
      */
-
+    @NotBlank(message = "El nombre del usuario no puede estar vacío")
     private String usuarioNombre;
 
     /**
      * El importe del balance.
      */
+    @Negative(message = "El importe no puede ser negativo")
     private BigDecimal importe;
 }

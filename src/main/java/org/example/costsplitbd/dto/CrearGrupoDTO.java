@@ -1,5 +1,7 @@
 package org.example.costsplitbd.dto;
 
+import jakarta.validation.constraints.Negative;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,7 @@ public class CrearGrupoDTO {
     /**
      * El nombre del grupo.
      */
+    @NotBlank(message = "El nombre de grupo no puede estar vacío")
     private String nombre;
 
     /**
@@ -29,6 +32,7 @@ public class CrearGrupoDTO {
     /**
      * La descripción del grupo.
      */
+    @NotBlank(message = "La Descripcion no puede ser vacia")
     private String descripcion;
 
     List<Usuario> participantes;

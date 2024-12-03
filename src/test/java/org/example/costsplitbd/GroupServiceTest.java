@@ -1,22 +1,23 @@
 package org.example.costsplitbd;
 
 import jakarta.transaction.Transactional;
-import org.example.costsplitbd.dto.AniadirParticipanteDTO;
-import org.example.costsplitbd.dto.GrupoDetalladoDTO;
+import org.example.costsplitbd.dto.CrearGrupoDTO;
+import org.example.costsplitbd.dto.GrupoDTO;
+import org.example.costsplitbd.dto.UsuarioDTO;
 import org.example.costsplitbd.models.Grupo;
 import org.example.costsplitbd.models.Usuario;
 import org.example.costsplitbd.repositories.GrupoRepository;
 import org.example.costsplitbd.repositories.UsuarioRepository;
 import org.example.costsplitbd.services.GrupoService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -32,46 +33,62 @@ public class GroupServiceTest {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    private Grupo grupo;
+    private Usuario usuario;
 
     @BeforeEach
     @Transactional
     public void inicializarBaseDatos() {
-        Usuario usuario1 = new Usuario();
-        usuario1.setNombre("Usuario1");
-        usuario1.setApellidos("Apellido1");
-        usuario1.setEmail("usuario1@example.com");
-        usuario1 = usuarioRepository.save(usuario1);
+        usuario = new Usuario();
+        usuario.setNombre("Usuario1");
+        usuario.setApellidos("Apellido1");
+        usuario.setEmail("usuario1@example.com");
+        usuario.setContrasenia("password1");
+        usuario.setUrlImg("http://example.com/img1.jpg"); // Set a non-null value for the url_img column
+        usuario = usuarioRepository.save(usuario);
 
         Usuario usuario2 = new Usuario();
         usuario2.setNombre("Usuario2");
         usuario2.setApellidos("Apellido2");
         usuario2.setEmail("usuario2@example.com");
+        usuario2.setContrasenia("password2");
+        usuario2.setUrlImg("http://example.com/img2.jpg"); // Set a non-null value for the url_img column
         usuario2 = usuarioRepository.save(usuario2);
 
         Usuario usuario3 = new Usuario();
         usuario3.setNombre("Usuario3");
         usuario3.setApellidos("Apellido3");
         usuario3.setEmail("usuario3@example.com");
+        usuario3.setContrasenia("password3");
+        usuario3.setUrlImg("http://example.com/img3.jpg"); // Set a non-null value for the url_img column
         usuario3 = usuarioRepository.save(usuario3);
-
-        grupo = new Grupo();
-        grupo = grupoRepository.save(grupo);
     }
 
     @Test
+    @DisplayName("Test 1 -> Crear grupo con datos incorrectos")
+    @Tag("Grupo")
     public void testCrearGrupoNegativoUnitario() {
-        AniadirParticipanteDTO participantes = new AniadirParticipanteDTO();
-        participantes.setIdUsuarios(Arrays.asList(1L, 2L, 3L));
-        GrupoDetalladoDTO grupoDetalladoDTO = grupoService.aniadirParticipantes(grupo.getId(), participantes);
-        assertNotNull(grupoDetalladoDTO);
+        // GIVEN
+        CrearGrupoDTO grupoInvalido = new CrearGrupoDTO();
+        // WHEN
+        Exception exception = assertThrows(Exception.class, () -> grupoService.crearGrupo(grupoInvalido, usuario));
+        //THEN
+        assertNotNull("El nombre del grupo es obligatorio", exception.getMessage());
     }
 
-//    @Test
-//    public void testCrearGrupoPositivoUnitario() {
-//        AniadirParticipanteDTO participantes = new AniadirParticipanteDTO();
-//        participantes.setIdUsuarios(Arrays.asList(1L, 2L, 3L));
-//        GrupoDetalladoDTO grupoDetalladoDTO = grupoService.aniadirParticipantes(grupo.getId(), participantes);
-//        assertNotNull(grupoDetalladoDTO);
-//    }
+    @Test
+    @DisplayName("Test 2 -> Crear grupo con datos correctos")
+    @Tag("Grupo")
+    public void testCrearGrupoPositivoUnitario() throws Exception {
+        // GIVEN
+        CrearGrupoDTO grupoValido = new CrearGrupoDTO();
+        grupoValido.setNombre("Grupo Valido");
+
+        // WHEN
+        GrupoDTO grupoCreado = grupoService.crearGrupo(grupoValido, usuario);
+
+        // THEN
+        assertNotNull(grupoCreado);
+        assertNotNull(grupoCreado.getId());
+        assertEquals(grupoValido.getNombre(), grupoCreado.getNombre());
+    }
 }

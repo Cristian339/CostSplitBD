@@ -43,7 +43,7 @@ public class GrupoService {
      * @param crearGrupoDTO los datos para crear el grupo
      * @return los datos del grupo creado
      */
-    public GrupoDTO crearGrupo(CrearGrupoDTO crearGrupoDTO, Usuario usuarioCreador) {
+        public GrupoDTO crearGrupo(CrearGrupoDTO crearGrupoDTO, Usuario usuarioCreador) {
         Grupo grupo = new Grupo();
         grupo.setNombre(crearGrupoDTO.getNombre());
         grupo.setImagenUrl(crearGrupoDTO.getImagenUrl());
