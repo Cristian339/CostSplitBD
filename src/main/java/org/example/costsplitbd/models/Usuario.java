@@ -17,7 +17,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @ToString
 @Entity
-@Table(name = "usuario", schema = "costsplit", catalog = "postgres")
+@Table(name = "usuario", schema = "costsplit")
 public class Usuario {
     /**
      * El identificador único para el usuario.

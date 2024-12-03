@@ -19,7 +19,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @ToString(exclude = {"grupo", "usuarios"})
 @Entity
-@Table(name = "gasto", schema = "costsplit", catalog = "postgres")
+@Table(name = "gasto", schema = "costsplit")
 public class Gasto {
     /**
      * El identificador único para el gasto.

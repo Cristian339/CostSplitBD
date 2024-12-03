@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode
 @ToString
 @Entity
-@Table(name = "balance", schema = "costsplit", catalog = "postgres")
+@Table(name = "balance", schema = "costsplit")
 public class Balance {
     /**
      * El identificador único para el balance.

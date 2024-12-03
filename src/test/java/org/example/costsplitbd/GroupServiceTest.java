@@ -35,8 +35,8 @@ public class GroupServiceTest {
     private Grupo grupo;
 
     @BeforeEach
+    @Transactional
     public void inicializarBaseDatos() {
-        // Crear y guardar usuarios
         Usuario usuario1 = new Usuario();
         usuario1.setNombre("Usuario1");
         usuario1.setApellidos("Apellido1");
@@ -55,14 +55,23 @@ public class GroupServiceTest {
         usuario3.setEmail("usuario3@example.com");
         usuario3 = usuarioRepository.save(usuario3);
 
-        // Crear y guardar grupo
         grupo = new Grupo();
-        grupo.setNombre("Grupo de Prueba");
         grupo = grupoRepository.save(grupo);
     }
 
     @Test
-    public void testAniadirParticipantes() {
-
+    public void testCrearGrupoNegativoUnitario() {
+        AniadirParticipanteDTO participantes = new AniadirParticipanteDTO();
+        participantes.setIdUsuarios(Arrays.asList(1L, 2L, 3L));
+        GrupoDetalladoDTO grupoDetalladoDTO = grupoService.aniadirParticipantes(grupo.getId(), participantes);
+        assertNotNull(grupoDetalladoDTO);
     }
+
+//    @Test
+//    public void testCrearGrupoPositivoUnitario() {
+//        AniadirParticipanteDTO participantes = new AniadirParticipanteDTO();
+//        participantes.setIdUsuarios(Arrays.asList(1L, 2L, 3L));
+//        GrupoDetalladoDTO grupoDetalladoDTO = grupoService.aniadirParticipantes(grupo.getId(), participantes);
+//        assertNotNull(grupoDetalladoDTO);
+//    }
 }
