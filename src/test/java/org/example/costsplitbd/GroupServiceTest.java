@@ -17,6 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -69,10 +73,14 @@ public class GroupServiceTest {
     public void testCrearGrupoNegativoUnitario() {
         // GIVEN
         CrearGrupoDTO grupoInvalido = new CrearGrupoDTO();
+        grupoInvalido.setNombre(""); // Nombre vacío
+
         // WHEN
         Exception exception = assertThrows(Exception.class, () -> grupoService.crearGrupo(grupoInvalido, usuario));
-        //THEN
-        assertNotNull("El nombre del grupo es obligatorio", exception.getMessage());
+
+        // THEN
+        assertNotNull(exception.getMessage());
+        assertTrue(exception.getMessage().contains("El nombre del grupo es obligatorio"));
     }
 
     @Test
@@ -82,13 +90,17 @@ public class GroupServiceTest {
         // GIVEN
         CrearGrupoDTO grupoValido = new CrearGrupoDTO();
         grupoValido.setNombre("Grupo Valido");
+        grupoValido.setImagenUrl("http://example.com/img.jpg");
+        grupoValido.setDescripcion("Descripción del grupo");
+        grupoValido.setParticipantes(new ArrayList<>(Arrays.asList(usuario)));
 
         // WHEN
         GrupoDTO grupoCreado = grupoService.crearGrupo(grupoValido, usuario);
 
         // THEN
         assertNotNull(grupoCreado);
-        assertNotNull(grupoCreado.getId());
-        assertEquals(grupoValido.getNombre(), grupoCreado.getNombre());
+        assertEquals("Grupo Valido", grupoCreado.getNombre());
+        assertEquals("Descripción del grupo", grupoCreado.getDescripcion());
+        assertNotNull(grupoCreado.getFechaCreacion());
     }
 }

@@ -1,5 +1,6 @@
 package org.example.costsplitbd.services;
 
+import jakarta.validation.Valid;
 import org.example.costsplitbd.dto.*;
 import org.example.costsplitbd.models.Balance;
 import org.example.costsplitbd.models.Gasto;
@@ -11,6 +12,7 @@ import org.example.costsplitbd.repositories.GrupoRepository;
 import org.example.costsplitbd.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -24,6 +26,7 @@ import java.util.Set;
  * Servicio para gestionar las operaciones relacionadas con los grupos.
  */
 @Service
+@Validated
 public class GrupoService {
     @Autowired
     private GrupoRepository grupoRepository;
@@ -43,7 +46,7 @@ public class GrupoService {
      * @param crearGrupoDTO los datos para crear el grupo
      * @return los datos del grupo creado
      */
-        public GrupoDTO crearGrupo(CrearGrupoDTO crearGrupoDTO, Usuario usuarioCreador) {
+        public GrupoDTO crearGrupo(@Valid CrearGrupoDTO crearGrupoDTO, Usuario usuarioCreador) {
         Grupo grupo = new Grupo();
         grupo.setNombre(crearGrupoDTO.getNombre());
         grupo.setImagenUrl(crearGrupoDTO.getImagenUrl());
