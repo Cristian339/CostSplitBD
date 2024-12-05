@@ -1,5 +1,6 @@
 package org.example.costsplitbd.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ public class GrupoDTO {
     /**
      * El nombre del grupo.
      */
+    @NotBlank(message = "El nombre del grupo no puede ser vacio")
     private String nombre;
 
     /**

@@ -1,6 +1,7 @@
 package org.example.costsplitbd;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
 import org.example.costsplitbd.dto.CrearGrupoDTO;
 import org.example.costsplitbd.dto.GrupoDTO;
 import org.example.costsplitbd.dto.UsuarioDTO;
@@ -68,23 +69,38 @@ public class GroupServiceTest {
     }
 
     @Test
-    @DisplayName("Test 1 -> Crear grupo con datos incorrectos")
+    @DisplayName("Test 1 -> Crear grupo con nombre vacío")
     @Tag("Grupo")
-    public void testCrearGrupoNegativoUnitario() {
+    public void testCrearGrupoConNombreVacio() {
         // GIVEN
         CrearGrupoDTO grupoInvalido = new CrearGrupoDTO();
-        grupoInvalido.setNombre(""); // Nombre vacío
+        grupoInvalido.setNombre("");
 
-        // WHEN
-        Exception exception = assertThrows(Exception.class, () -> grupoService.crearGrupo(grupoInvalido, usuario));
-
-        // THEN
+        // WHEN & THEN
+        ConstraintViolationException exception = assertThrows(ConstraintViolationException.class, () -> grupoService.crearGrupo(grupoInvalido, usuario));
         assertNotNull(exception.getMessage());
-        assertTrue(exception.getMessage().contains("El nombre del grupo es obligatorio"));
+
     }
 
     @Test
-    @DisplayName("Test 2 -> Crear grupo con datos correctos")
+    @DisplayName("Test 2 -> Crear grupo con usuario inexistente")
+    @Tag("Grupo")
+    public void testCrearGrupoConUsuarioInexistente() {
+        // GIVEN
+        CrearGrupoDTO grupoConUsuarioInvalido = new CrearGrupoDTO();
+        grupoConUsuarioInvalido.setNombre("Grupo con Usuario Invalido");
+        Usuario usuarioInvalido = new Usuario();
+        usuarioInvalido.setId(-1L);
+        grupoConUsuarioInvalido.setParticipantes(new ArrayList<>(Arrays.asList(usuarioInvalido)));
+
+        // WHEN & THEN
+        ConstraintViolationException exception = assertThrows(ConstraintViolationException.class, () -> grupoService.crearGrupo(grupoConUsuarioInvalido, usuario));
+        assertNotNull(exception.getMessage());
+
+    }
+
+    @Test
+    @DisplayName("Test 3 -> Crear grupo con datos correctos")
     @Tag("Grupo")
     public void testCrearGrupoPositivoUnitario() throws Exception {
         // GIVEN
