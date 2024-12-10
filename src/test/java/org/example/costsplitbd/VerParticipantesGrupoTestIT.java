@@ -40,7 +40,7 @@ public class VerParticipantesGrupoTestIT {
     private Long idGrupo;
 
     @BeforeEach
-    public void setUp() {
+    public void inicializarDatos() {
         usuario = new Usuario();
         usuario.setNombre("Nombre");
         usuario.setApellidos("Apellidos");
@@ -50,7 +50,7 @@ public class VerParticipantesGrupoTestIT {
         usuario.setEsAdmin(false);
         usuarioRepository.save(usuario);
 
-        // Retrieve the saved user to ensure it is managed by the current session
+
         Usuario managedUsuario = usuarioRepository.findById(usuario.getId()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         Grupo grupo = new Grupo();

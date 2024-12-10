@@ -36,12 +36,12 @@ public class AniadirGastoTest {
     private Usuario pagador;
 
     @BeforeEach
-    public void setUp() {
+    public void inicializarDatos() {
         grupo = new Grupo();
         grupo.setNombre("Grupo de prueba");
         grupo.setDescripcion("Descripción del grupo de prueba");
         grupo.setFechaCreacion(LocalDateTime.now());
-        grupo.setImagenUrl("http://example.com/imgGrupo.jpg"); // Set a non-null value for IMAGEN_URL
+        grupo.setImagenUrl("http://example.com/imgGrupo.jpg");
         grupoRepository.save(grupo);
 
         pagador = new Usuario();

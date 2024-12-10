@@ -32,7 +32,7 @@ public class ListarAmigosTestIT {
     private Usuario amigo;
 
     @BeforeEach
-    public void setUp() {
+    public void inicializarDatos() {
         usuario = new Usuario();
         usuario.setNombre("Usuario");
         usuario.setApellidos("Apellidos");
@@ -51,7 +51,7 @@ public class ListarAmigosTestIT {
         amigo.setEsAdmin(false);
         usuarioRepository.save(amigo);
 
-        // Add amigo to usuario's friends list
+
         usuario.getAmigos().add(amigo);
         usuarioRepository.save(usuario);
     }

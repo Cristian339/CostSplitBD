@@ -39,7 +39,7 @@ public class ListarGruposTestIntegracion {
     private Grupo grupo;
 
     @BeforeEach
-    public void setUp() {
+    public void inicializarDatos() {
         usuario = new Usuario();
         usuario.setNombre("Usuario");
         usuario.setApellidos("Apellidos");

@@ -41,7 +41,7 @@ public class CrearParticipanteTestIT {
     private Grupo grupo;
 
     @BeforeEach
-    public void setUp() {
+    public void inicializarDatos() {
         usuario = new Usuario();
         usuario.setNombre("Nombre");
         usuario.setApellidos("Apellidos");

@@ -40,7 +40,7 @@ public class ListarGruposTest {
     private Long idUsuario;
 
     @BeforeEach
-    public void setUp() {
+    public void inicializarDatos() {
         usuario = new Usuario();
         usuario.setNombre("Nombre");
         usuario.setApellidos("Apellidos");
@@ -51,7 +51,7 @@ public class ListarGruposTest {
         usuarioRepository.save(usuario);
         idUsuario = usuario.getId();
 
-        // Retrieve the saved user to ensure it is managed by the current session
+
         Usuario managedUsuario = usuarioRepository.findById(usuario.getId()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         Grupo grupo = new Grupo();
