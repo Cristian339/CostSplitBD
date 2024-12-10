@@ -27,7 +27,7 @@ public class GrupoController {
      * @return el grupo creado
      */
     @PostMapping("/crear")
-    public GrupoDTO crearGrupo(@RequestBody CrearGrupoDTO crearGrupoDTO, @RequestParam Long idUsuarioCreador) {
+    public GrupoDTO crearGrupo(@RequestBody CrearGrupoDTO crearGrupoDTO, @RequestParam Long idUsuarioCreador)throws Exception {
         Usuario usuarioCreador = usuarioRepository.findById(idUsuarioCreador).orElse(null);
         if (usuarioCreador == null) {
             throw new RuntimeException("Usuario creador no encontrado");
@@ -89,7 +89,7 @@ public class GrupoController {
      * @return el gasto añadido
      */
     @PostMapping("/gasto/nuevo")
-    public GastoDTO aniadirGasto(@RequestBody GastoDTO gastoDTO) {
+    public GastoDTO aniadirGasto(@RequestBody GastoDTO gastoDTO) throws Exception  {
         return grupoService.aniadirGasto(gastoDTO);
     }
 

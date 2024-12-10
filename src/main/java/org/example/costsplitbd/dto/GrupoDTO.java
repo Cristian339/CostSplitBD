@@ -25,7 +25,7 @@ public class GrupoDTO {
     /**
      * El nombre del grupo.
      */
-    @NotBlank(message = "El nombre del grupo no puede ser vacio")
+    //@NotBlank(message = "El nombre del grupo no puede ser vacio")
     private String nombre;
 
     /**
@@ -41,5 +41,7 @@ public class GrupoDTO {
     /**
      * La descripción del grupo.
      */
+    //@NotBlank(message = "La Descripcion no puede ser vacia")
+
     private String descripcion;
 }

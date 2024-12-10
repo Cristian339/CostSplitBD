@@ -1,5 +1,6 @@
 package org.example.costsplitbd.services;
 
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.example.costsplitbd.dto.*;
 import org.example.costsplitbd.models.Balance;
@@ -17,10 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Servicio para gestionar las operaciones relacionadas con los grupos.
@@ -46,17 +44,26 @@ public class GrupoService {
      * @param crearGrupoDTO los datos para crear el grupo
      * @return los datos del grupo creado
      */
-        public GrupoDTO crearGrupo(@Valid CrearGrupoDTO crearGrupoDTO, Usuario usuarioCreador) {
+    public GrupoDTO crearGrupo(@Valid CrearGrupoDTO crearGrupoDTO, Usuario usuarioCreador) throws Exception {
+        if (usuarioRepository.findById(usuarioCreador.getId()).isEmpty()) {
+            throw new Exception("Usuario creador no encontrado");
+        }
+
         Grupo grupo = new Grupo();
-        grupo.setNombre(crearGrupoDTO.getNombre());
+        if (crearGrupoDTO.getNombre() == null || crearGrupoDTO.getNombre().isEmpty()) {
+            throw new Exception("No se puede crear un grupo sin nombre");
+        } else {
+            grupo.setNombre(crearGrupoDTO.getNombre());
+        }
         grupo.setImagenUrl(crearGrupoDTO.getImagenUrl());
         grupo.setDescripcion(crearGrupoDTO.getDescripcion());
         grupo.setFechaCreacion(LocalDateTime.now());
         grupo.setUsuarios(new HashSet<>());
         grupo.getUsuarios().add(usuarioCreador);
 
-
-        if (crearGrupoDTO.getParticipantes() != null) {
+        if (crearGrupoDTO.getParticipantes() == null || crearGrupoDTO.getParticipantes().isEmpty()) {
+            throw new Exception("No se puede crear un grupo sin participantes");
+        } else {
             for (Usuario participante : crearGrupoDTO.getParticipantes()) {
                 grupo.getUsuarios().add(participante);
             }
@@ -77,19 +84,14 @@ public class GrupoService {
     /**
      * Añade o elimina participantes de un grupo.
      *
-     * @param idGrupo el ID del grupo
+     * @param idGrupo                el ID del grupo
      * @param aniadirParticipanteDTO los datos de los participantes a añadir o eliminar
-     * @param esAgregar indica si se están añadiendo (true) o eliminando (false) participantes
+     * @param esAgregar              indica si se están añadiendo (true) o eliminando (false) participantes
      * @return los datos detallados del grupo actualizado
      */
     private GrupoDetalladoDTO actualizarParticipantes(Long idGrupo, AniadirParticipanteDTO aniadirParticipanteDTO, boolean esAgregar) {
-        Grupo grupo = grupoRepository.findById(idGrupo).orElse(null);
-        if (grupo == null) {
-            return null;
-        }
-
-        Set<Usuario
-                > usuarios = grupo.getUsuarios();
+        Grupo grupo = grupoRepository.findById(idGrupo).orElseThrow(() -> new RuntimeException("Grupo no encontrado"));
+        Set<Usuario> usuarios = grupo.getUsuarios();
         for (Long idUsuario : aniadirParticipanteDTO.getIdUsuarios()) {
             Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
             if (usuario != null) {
@@ -123,7 +125,7 @@ public class GrupoService {
     /**
      * Añade participantes a un grupo.
      *
-     * @param idGrupo el ID del grupo
+     * @param idGrupo                el ID del grupo
      * @param aniadirParticipanteDTO los datos de los participantes a añadir
      * @return los datos detallados del grupo actualizado
      */
@@ -137,11 +139,23 @@ public class GrupoService {
      * @param idGrupo el ID del grupo
      * @return la lista de participantes del grupo
      */
-    public List<UsuarioDTO> verParticipantesGrupo(Long idGrupo) {
+/*    public List<UsuarioDTO> verParticipantesGrupo(Long idGrupo) {
         Grupo grupo = grupoRepository.findById(idGrupo).orElse(null);
         List<UsuarioDTO> usuarioDTOS = new ArrayList<>();
         grupo.getUsuarios().forEach(usuario -> {
-            usuarioDTOS.add(new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(), usuario.getEmail(),usuario.getUrlImg()));
+            usuarioDTOS.add(new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(), usuario.getEmail(), usuario.getUrlImg()));
+        });
+        return usuarioDTOS;
+    }*/
+
+    public List<UsuarioDTO> verParticipantesGrupo(Long idGrupo) {
+        Grupo grupo = grupoRepository.findById(idGrupo).orElse(null);
+        if (grupo == null) {
+            throw new RuntimeException("Grupo no encontrado");
+        }
+        List<UsuarioDTO> usuarioDTOS = new ArrayList<>();
+        grupo.getUsuarios().forEach(usuario -> {
+            usuarioDTOS.add(new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(), usuario.getEmail(), usuario.getUrlImg()));
         });
         return usuarioDTOS;
     }
@@ -149,13 +163,24 @@ public class GrupoService {
     /**
      * Elimina participantes de un grupo.
      *
-     * @param idGrupo el ID del grupo
+     * @param idGrupo                el ID del grupo
      * @param aniadirParticipanteDTO los datos de los participantes a eliminar
      */
-    public void eliminarParticipante(Long idGrupo, AniadirParticipanteDTO aniadirParticipanteDTO) {
+/*    public void eliminarParticipante(Long idGrupo, AniadirParticipanteDTO aniadirParticipanteDTO) {
         actualizarParticipantes(idGrupo, aniadirParticipanteDTO, false);
-    }
+    }*/
 
+    public void eliminarParticipante(Long idGrupo, AniadirParticipanteDTO aniadirParticipanteDTO) {
+        Grupo grupo = grupoRepository.findById(idGrupo).orElseThrow(() -> new RuntimeException("Grupo no encontrado"));
+        for (Long idUsuario : aniadirParticipanteDTO.getIdUsuarios()) {
+            Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            if (!grupo.getUsuarios().contains(usuario)) {
+                throw new RuntimeException("Usuario no pertenece al grupo");
+            }
+            grupo.getUsuarios().remove(usuario);
+        }
+        grupoRepository.save(grupo);
+    }
     /**
      * Lista los grupos de un usuario.
      *
@@ -183,16 +208,31 @@ public class GrupoService {
      * @param gastoDTO los datos del gasto a añadir
      * @return los datos del gasto añadido
      */
-    public GastoDTO aniadirGasto(GastoDTO gastoDTO) {
-        Grupo grupo = grupoRepository.findById(gastoDTO.getIdGrupo()).orElse(null);
+    public GastoDTO aniadirGasto(GastoDTO gastoDTO) throws Exception {
+        if (gastoDTO.getDescripcion() == null || gastoDTO.getDescripcion().isEmpty()) {
+            throw new Exception("La descripción no puede estar vacía");
+        }
 
+        if (gastoDTO.getMontoTotal() == null || gastoDTO.getMontoTotal().compareTo(BigDecimal.ZERO) < 0) {
+            throw new Exception("El monto total no puede ser negativo");
+        }
+
+        if (gastoDTO.getFecha() == null) {
+            throw new Exception("La fecha es inválida");
+        }
+
+        Grupo grupo = grupoRepository.findById(gastoDTO.getIdGrupo()).orElse(null);
         if (grupo == null) {
-            return null;
+            throw new Exception("El grupo no existe");
         }
 
         Usuario pagador = usuarioRepository.findById(gastoDTO.getIdPagador()).orElse(null);
         if (pagador == null) {
-            return null;
+            throw new Exception("El pagador no existe");
+        }
+
+        if (gastoDTO.getTipo() == null || gastoDTO.getTipo().isEmpty()) {
+            throw new Exception("El tipo de gasto es inválido");
         }
 
         int nroParticipantes = grupo.getUsuarios().size();
@@ -272,5 +312,28 @@ public class GrupoService {
         }
 
         return gastoDTOS;
+    }
+
+    public GrupoDetalladoDTO verGrupo(Long idGrupo) {
+        Optional<Grupo> grupoOptional = grupoRepository.findById(idGrupo);
+        if (grupoOptional.isPresent()) {
+            Grupo grupo = grupoOptional.get();
+            GrupoDetalladoDTO grupoDetalladoDTO = new GrupoDetalladoDTO();
+            grupoDetalladoDTO.setId(grupo.getId());
+            grupoDetalladoDTO.setNombre(grupo.getNombre());
+            grupoDetalladoDTO.setDescripcion(grupo.getDescripcion());
+            grupoDetalladoDTO.setImagenUrl(grupo.getImagenUrl());
+            grupoDetalladoDTO.setFechaCreacion(grupo.getFechaCreacion());
+
+            List<UsuarioDTO> usuarioDTOList = new ArrayList<>();
+            for (Usuario usuario : grupo.getUsuarios()) {
+                usuarioDTOList.add(new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(), usuario.getEmail(), usuario.getUrlImg()));
+            }
+            grupoDetalladoDTO.setUsuarios(usuarioDTOList);
+
+            return grupoDetalladoDTO;
+        } else {
+            throw new RuntimeException("Grupo no encontrado");
+        }
     }
 }

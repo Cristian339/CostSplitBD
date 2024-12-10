@@ -1,15 +1,13 @@
 package org.example.costsplitbd;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolationException;
 import org.example.costsplitbd.dto.CrearGrupoDTO;
 import org.example.costsplitbd.dto.GrupoDTO;
 import org.example.costsplitbd.dto.UsuarioDTO;
-import org.example.costsplitbd.models.Grupo;
 import org.example.costsplitbd.models.Usuario;
-import org.example.costsplitbd.repositories.GrupoRepository;
 import org.example.costsplitbd.repositories.UsuarioRepository;
 import org.example.costsplitbd.services.GrupoService;
+import org.example.costsplitbd.services.UsuarioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -20,7 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,51 +31,26 @@ public class GroupServiceTest {
     private GrupoService grupoService;
 
     @Autowired
-    private GrupoRepository grupoRepository;
+    private UsuarioService usuarioService;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    private Usuario usuario;
 
-    @BeforeEach
-    @Transactional
-    public void inicializarBaseDatos() {
-        usuario = new Usuario();
-        usuario.setNombre("Usuario1");
-        usuario.setApellidos("Apellido1");
-        usuario.setEmail("usuario1@example.com");
-        usuario.setContrasenia("password1");
-        usuario.setUrlImg("http://example.com/img1.jpg"); // Set a non-null value for the url_img column
-        usuario = usuarioRepository.save(usuario);
-
-        Usuario usuario2 = new Usuario();
-        usuario2.setNombre("Usuario2");
-        usuario2.setApellidos("Apellido2");
-        usuario2.setEmail("usuario2@example.com");
-        usuario2.setContrasenia("password2");
-        usuario2.setUrlImg("http://example.com/img2.jpg"); // Set a non-null value for the url_img column
-        usuario2 = usuarioRepository.save(usuario2);
-
-        Usuario usuario3 = new Usuario();
-        usuario3.setNombre("Usuario3");
-        usuario3.setApellidos("Apellido3");
-        usuario3.setEmail("usuario3@example.com");
-        usuario3.setContrasenia("password3");
-        usuario3.setUrlImg("http://example.com/img3.jpg"); // Set a non-null value for the url_img column
-        usuario3 = usuarioRepository.save(usuario3);
-    }
 
     @Test
     @DisplayName("Test 1 -> Crear grupo con nombre vacío")
     @Tag("Grupo")
-    public void testCrearGrupoConNombreVacio() {
+    public void testCrearGrupoConNombreVacio() throws Exception {
         // GIVEN
+        UsuarioDTO usuario = usuarioService.crearUsuario(new UsuarioDTO(null, "Usuario1", "Apellido1", "usuario1@example.com", "http://example.com/img1.jpg"));
+        assertNotNull(usuario, "El usuario no se creó correctamente");
+
         CrearGrupoDTO grupoInvalido = new CrearGrupoDTO();
         grupoInvalido.setNombre("");
 
         // WHEN & THEN
-        ConstraintViolationException exception = assertThrows(ConstraintViolationException.class, () -> grupoService.crearGrupo(grupoInvalido, usuario));
+        Exception exception = assertThrows(Exception.class, () -> grupoService.crearGrupo(grupoInvalido, Objects.requireNonNull(usuarioRepository.findById(usuario.getId()).orElse(null))));
         assertNotNull(exception.getMessage());
 
     }
@@ -85,18 +58,16 @@ public class GroupServiceTest {
     @Test
     @DisplayName("Test 2 -> Crear grupo con usuario inexistente")
     @Tag("Grupo")
-    public void testCrearGrupoConUsuarioInexistente() {
+    public void testCrearGrupoConUsuarioInexistente() throws Exception {
         // GIVEN
         CrearGrupoDTO grupoConUsuarioInvalido = new CrearGrupoDTO();
         grupoConUsuarioInvalido.setNombre("Grupo con Usuario Invalido");
         Usuario usuarioInvalido = new Usuario();
         usuarioInvalido.setId(-1L);
-        grupoConUsuarioInvalido.setParticipantes(new ArrayList<>(Arrays.asList(usuarioInvalido)));
 
         // WHEN & THEN
-        ConstraintViolationException exception = assertThrows(ConstraintViolationException.class, () -> grupoService.crearGrupo(grupoConUsuarioInvalido, usuario));
+        Exception exception = assertThrows(Exception.class, () -> grupoService.crearGrupo(grupoConUsuarioInvalido, usuarioInvalido));
         assertNotNull(exception.getMessage());
-
     }
 
     @Test
@@ -104,6 +75,12 @@ public class GroupServiceTest {
     @Tag("Grupo")
     public void testCrearGrupoPositivoUnitario() throws Exception {
         // GIVEN
+        UsuarioDTO usuarioDTO = usuarioService.crearUsuario(new UsuarioDTO(null, "Usuario1", "Apellido1", "usuario1@example.com", "http://example.com/img1.jpg"));
+        assertNotNull(usuarioDTO, "El usuario no se creó correctamente");
+
+        Usuario usuario = usuarioRepository.findById(usuarioDTO.getId()).orElse(null);
+        assertNotNull(usuario, "El usuario no se encontró en la base de datos");
+
         CrearGrupoDTO grupoValido = new CrearGrupoDTO();
         grupoValido.setNombre("Grupo Valido");
         grupoValido.setImagenUrl("http://example.com/img.jpg");

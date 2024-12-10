@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -62,13 +63,12 @@ public class Usuario {
      */
     @Column(name = "es_admin", nullable = false)
     private boolean esAdmin;
+
     /**
      * La URL de la imagen del grupo.
      */
-    @Column(name = "url_img", nullable = false)
+    @Column(name = "url_img", nullable = true)
     private String urlImg;
-
-    /**
 
     /**
      * Los amigos del usuario.
@@ -79,5 +79,5 @@ public class Usuario {
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "amigo_id")
     )
-    private Set<Usuario> amigos;
+    private Set<Usuario> amigos = new HashSet<>();
 }
