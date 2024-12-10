@@ -1,4 +1,4 @@
-/*
+// src/test/java/org/example/costsplitbd/CrearParticipanteTestIT.java
 package org.example.costsplitbd;
 
 import jakarta.transaction.Transactional;
@@ -66,14 +66,13 @@ public class CrearParticipanteTestIT {
     public void testAniadirParticipanteConDatosValidosIntegracion() {
         // GIVEN
         AniadirParticipanteDTO aniadirParticipanteDTO = new AniadirParticipanteDTO();
-        aniadirParticipanteDTO.setIdGrupo(grupo.getId());
-        aniadirParticipanteDTO.setIdUsuario(usuario.getId());
+        aniadirParticipanteDTO.setIdUsuarios(Collections.singletonList(usuario.getId()));
 
         // WHEN
-        GrupoDetalladoDTO grupoDetalladoDTO = grupoService.aniadirParticipanteGrupo(aniadirParticipanteDTO);
+        GrupoDetalladoDTO grupoDetalladoDTO = grupoService.aniadirParticipantes(grupo.getId(), aniadirParticipanteDTO);
 
         // THEN
         assertNotNull(grupoDetalladoDTO);
         assertTrue(grupoDetalladoDTO.getUsuarios().stream().anyMatch(u -> u.getId().equals(usuario.getId())));
     }
-}*/
+}
