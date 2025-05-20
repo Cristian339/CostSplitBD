@@ -33,6 +33,5 @@ public class BalanceDTO {
     /**
      * El importe del balance.
      */
-    @Negative(message = "El importe no puede ser negativo")
     private BigDecimal importe;
 }

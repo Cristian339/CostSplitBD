@@ -22,4 +22,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
      */
     @Query(value = "SELECT u.* FROM costsplit.amigo a JOIN costsplit.usuario u ON a.amigo_id = u.id WHERE a.usuario_id = ?1", nativeQuery = true)
     Set<Usuario> findAmigosByUsuarioId(Long idUsuario);
+
+    // Buscar usuario por email (para login)
+    Optional<Usuario> findByEmail(String email);
 }
+
+

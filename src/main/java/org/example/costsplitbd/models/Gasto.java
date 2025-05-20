@@ -2,6 +2,9 @@ package org.example.costsplitbd.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.costsplitbd.enumerados.Divisa;
+import org.example.costsplitbd.enumerados.MetodoReparticion;
+import org.example.costsplitbd.enumerados.TipoGasto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -60,6 +63,22 @@ public class Gasto {
     @Column(name = "tipo_gasto", nullable = false)
     private String tipo;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_gasto")
+    private TipoGasto tipoGasto;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "metodo_pago")
+    private MetodoReparticion metodoPago;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "divisa", nullable = false)
+    private Divisa divisa;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "metodo_reparticion")
+    private MetodoReparticion metodoReparticion;
+
     /**
      * El usuario que realizó el gasto.
      */
@@ -78,10 +97,4 @@ public class Gasto {
     )
     private Set<Usuario> usuarios = new HashSet<>();
 
-    /**
-     * Enum para los tipos de gasto.
-     */
-    public enum TipoGasto {
-        DEUDA, TRANSFERENCIA
-    }
 }
