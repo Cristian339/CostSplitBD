@@ -32,4 +32,13 @@ public interface BalanceRepository extends JpaRepository<Balance, Long> {
      */
     @Query("SELECT b FROM Balance b WHERE b.grupo.id = :idGrupo")
     List<Balance> findBalanceByGrupoId(Long idGrupo);
+
+    /**
+     * Encuentra un balance por el ID del grupo y el ID del usuario.
+     *
+     * @param grupoId el ID del grupo
+     * @param usuarioId el ID del usuario
+     * @return un Optional con el balance encontrado, si existe
+     */
+    Optional<Balance> findByGrupoIdAndUsuarioId(Long grupoId, Long usuarioId);
 }

@@ -28,4 +28,14 @@ public class CategoriaDTO {
      * El icono representativo de la categoría.
      */
     private String icono;
+
+    /**
+     * El color asociado a la categoría.
+     */
+    private String color;
+
+    /**
+     * Descripción detallada de la categoría.
+     */
+    private String descripcion;
 }

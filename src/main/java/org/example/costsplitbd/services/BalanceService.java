@@ -1,5 +1,6 @@
 package org.example.costsplitbd.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.example.costsplitbd.dto.BalanceDTO;
 import org.example.costsplitbd.exceptions.ResourceNotFoundException;
 import org.example.costsplitbd.models.Balance;
@@ -50,5 +51,19 @@ public class BalanceService {
         dto.setUsuarioNombre(balance.getUsuario().getNombre());
         dto.setImporte(balance.getImporte());
         return dto;
+    }
+
+    /**
+     * Obtiene el balance de un usuario específico en un grupo determinado.
+     *
+     * @param idGrupo ID del grupo
+     * @param idUsuario ID del usuario
+     * @return BalanceDTO con la información del balance del usuario
+     */
+    public BalanceDTO obtenerBalanceUsuario(Long idGrupo, Long idUsuario) {
+        return balanceRepository.findByGrupoIdAndUsuarioId(idGrupo, idUsuario)
+                .map(this::mapBalanceToDTO)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "No se encontró balance para el usuario " + idUsuario + " en el grupo " + idGrupo));
     }
 }

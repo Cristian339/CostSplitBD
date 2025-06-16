@@ -35,4 +35,17 @@ public class Categoria {
      */
     @Column(name = "icono")
     private String icono;
+
+    /**
+     * El color asociado a la categoría.
+     */
+    @Column(name = "color")
+    private String color;
+
+    /**
+     * Descripción detallada de la categoría.
+     */
+    @Column(name = "descripcion")
+    private String descripcion;
+
 }

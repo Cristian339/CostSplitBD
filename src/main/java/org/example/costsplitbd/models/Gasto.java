@@ -3,6 +3,7 @@ package org.example.costsplitbd.models;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.costsplitbd.enumerados.Divisa;
+import org.example.costsplitbd.enumerados.MetodoPago;
 import org.example.costsplitbd.enumerados.MetodoReparticion;
 import org.example.costsplitbd.enumerados.TipoGasto;
 
@@ -30,7 +31,7 @@ public class Gasto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     /**
      * El grupo al que pertenece este gasto.
@@ -60,21 +61,28 @@ public class Gasto {
     /**
      * El tipo de gasto.
      */
-    @Column(name = "tipo_gasto", nullable = false)
-    private String tipo;
-
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_gasto")
+    @Column(name = "tipo_gasto", nullable = false)
     private TipoGasto tipoGasto;
 
+    /**
+     * El método de pago utilizado.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "metodo_pago")
-    private MetodoReparticion metodoPago;
+    private MetodoPago metodoPago;
 
+    /**
+     * La divisa en la que se realizó el gasto.
+     * Se permite nulo temporalmente para la migración.
+     */
     @Enumerated(EnumType.STRING)
-    @Column(name = "divisa", nullable = false)
+    @Column(name = "divisa", nullable = true) // CAMBIO AQUÍ: nullable = true
     private Divisa divisa;
 
+    /**
+     * El método de repartición del gasto entre los usuarios.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "metodo_reparticion")
     private MetodoReparticion metodoReparticion;
@@ -96,5 +104,4 @@ public class Gasto {
             inverseJoinColumns = @JoinColumn(name = "id_usuario")
     )
     private Set<Usuario> usuarios = new HashSet<>();
-
 }

@@ -1,10 +1,12 @@
 package org.example.costsplitbd.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.example.costsplitbd.dto.*;
 import org.example.costsplitbd.exceptions.ResourceNotFoundException;
 import org.example.costsplitbd.models.Grupo;
 import org.example.costsplitbd.models.Usuario;
+import org.example.costsplitbd.repositories.GastoRepository;
 import org.example.costsplitbd.repositories.GrupoRepository;
 import org.example.costsplitbd.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class GrupoService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private GastoRepository gastoRepository;
 
     /**
      * Crea un nuevo grupo.
@@ -211,4 +216,6 @@ public class GrupoService {
                 usuario.getUrlImg()
         );
     }
+
+
 }

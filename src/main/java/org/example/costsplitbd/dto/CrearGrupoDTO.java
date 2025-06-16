@@ -35,5 +35,9 @@ public class CrearGrupoDTO {
     @NotBlank(message = "La Descripcion no puede ser vacia")
     private String descripcion;
 
-    List<Usuario> participantes;
+
+    /**
+     * Lista de IDs de los participantes que se agregarán al grupo.
+     */
+    private List<Long> participantesIds;
 }
