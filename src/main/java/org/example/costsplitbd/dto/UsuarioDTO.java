@@ -39,5 +39,15 @@ public class UsuarioDTO {
     @Email(message = "El correo electrónico debe tener un formato correcto")
     private String email;
 
+    /**
+     * La URL de la imagen del usuario.
+     */
+
     private String urlImg;
+
+    /**
+     * La contraseña del usuario.
+     */
+    @NotBlank(message = "La contraseña no puede estar vacía")
+    private String contrasenia;
 }

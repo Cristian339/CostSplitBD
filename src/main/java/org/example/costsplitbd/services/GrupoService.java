@@ -213,7 +213,8 @@ public class GrupoService {
                 usuario.getNombre(),
                 usuario.getApellidos(),
                 usuario.getEmail(),
-                usuario.getUrlImg()
+                usuario.getUrlImg(),
+                usuario.getContrasenia()
         );
     }
 

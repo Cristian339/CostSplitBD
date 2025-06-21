@@ -29,11 +29,11 @@ public class UsuarioController {
     /**
      * Crea un nuevo usuario.
      */
-    @PostMapping
+/*    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UsuarioDTO crearUsuario(@RequestBody UsuarioDTO usuarioDTO) {
         return usuarioService.crearUsuario(usuarioDTO);
-    }
+    }*/
 
     /**
      * Lista los amigos de un usuario.
