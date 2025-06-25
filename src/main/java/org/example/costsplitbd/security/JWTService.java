@@ -34,7 +34,7 @@ public class JWTService {
                 .email(usuario.getEmail())
                 .rol("USER") // Si tienes roles implementados, usar usuario.getRol().name()
                 .fecha_creacion(System.currentTimeMillis())
-                .fecha_expiracion(System.currentTimeMillis() + 1000 * 60 * 60 * 24) // 24 horas
+                .fecha_expiracion(System.currentTimeMillis() + 1000 * 60 * 60 * 2) // 2 horas
                 .build();
 
         return Jwts
