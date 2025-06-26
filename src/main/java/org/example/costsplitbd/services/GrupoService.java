@@ -81,9 +81,9 @@ public class GrupoService {
             throw new Exception("No se puede crear un grupo sin nombre");
         }
 
-        if (crearGrupoDTO.getParticipantesIds() == null || crearGrupoDTO.getParticipantesIds().isEmpty()) {
+/*        if (crearGrupoDTO.getParticipantesIds() == null || crearGrupoDTO.getParticipantesIds().isEmpty()) {
             throw new Exception("No se puede crear un grupo sin participantes");
-        }
+        }*/
     }
 
     /**

@@ -32,27 +32,36 @@ public class JWTFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
 
         // Si es una ruta pública, permitir acceso
-        if (request.getServletPath().contains("/auth")){
+        if (request.getServletPath().contains("/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        if(authHeader == null || !authHeader.startsWith("Bearer")){
+        if (authHeader == null || !authHeader.startsWith("Bearer")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String token = authHeader.substring(7);
+
+        // Validar expiración del token
+        if (jwtService.isExpired(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token expirado");
+            return;
+        }
+
         TokenDataDTO tokenDataDTO = jwtService.extractTokenData(token);
 
-        if(tokenDataDTO != null && SecurityContextHolder.getContext().getAuthentication() == null){
+        if (tokenDataDTO != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             Usuario usuario = usuarioService.getUsuarioByEmail(tokenDataDTO.getEmail());
 
-            if(usuario != null && !jwtService.isExpired(token)){
+            if (usuario != null) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         usuario.getEmail(),
                         null,
-                        null); // Si implementas roles, usar usuario.getAuthorities()
+                        null // Si implementas roles, usar usuario.getAuthorities()
+                );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
