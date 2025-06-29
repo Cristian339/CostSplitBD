@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,5 +26,14 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     // Buscar usuario por email (para login)
     Optional<Usuario> findByEmail(String email);
+
+    /**
+     * Busca usuarios cuyo nombre o email contenga el texto dado (ignorando mayúsculas/minúsculas).
+     *
+     * @param nombre parte del nombre a buscar
+     * @param email parte del email a buscar
+     * @return lista de usuarios que coinciden
+     */
+    List<Usuario> findByNombreContainingIgnoreCase(String nombre);
 
 }

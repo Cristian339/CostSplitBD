@@ -160,4 +160,20 @@ public class UsuarioService {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + id));
     }
+
+    /**
+     * Busca usuarios por nombre, excluyendo al usuario actual.
+     *
+     * @param termino el término de búsqueda (nombre)
+     * @param idUsuarioActual el ID del usuario que realiza la búsqueda
+     * @return lista de usuarios que coinciden con el término, excluyendo al usuario actual
+     */
+    public List<UsuarioDTO> buscarUsuarios(String termino, Long idUsuarioActual) {
+        return usuarioRepository
+                .findByNombreContainingIgnoreCase(termino)
+                .stream()
+                .filter(usuario -> !usuario.getId().equals(idUsuarioActual))
+                .map(this::mapUsuarioToDTO)
+                .collect(Collectors.toList());
+    }
 }

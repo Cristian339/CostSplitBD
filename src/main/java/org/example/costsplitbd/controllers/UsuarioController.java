@@ -137,4 +137,18 @@ public class UsuarioController {
         }
         return ResponseEntity.ok(perfilImagen);
     }
+
+    /**
+     * Busca usuarios por nombre o email, excluyendo al usuario actual.
+     *
+     * @param termino el término de búsqueda (nombre)
+     * @param idUsuarioActual el ID del usuario que realiza la búsqueda
+     * @return lista de usuarios que coinciden con el término, excluyendo al usuario actual
+     */
+    @GetMapping("/buscar")
+    public List<UsuarioDTO> buscarUsuarios(
+            @RequestParam String termino,
+            @RequestParam Long idUsuarioActual) {
+        return usuarioService.buscarUsuarios(termino, idUsuarioActual);
+    }
 }
